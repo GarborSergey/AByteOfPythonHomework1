@@ -32,6 +32,15 @@ class Human:
     def __del__(self):
         Human.numbers_of_human -= 1
 
+# для тестов
+h1 = Human('Alex', '27', '+7924409389')
+h2 = Human('Sergey', '17', '+7924401289')
+h3 = Human('Yulia', '32', '+791231989')
+h4 = Human('Misha', '10', '+792412389')
+h5 = Human('Sony', '24', '+792440131')
+h6 = Human('Lev', '54', '+7924409313')
+# для тестов
+
 
 # Проверка существования Адресной книги name_address_book.txt
 def existence_book(name_address_book):
@@ -46,6 +55,7 @@ def existence_book(name_address_book):
 def create_book(name: str):
     """Создает каталог с адресными книгами, если такового нет, и пустую адресную книгу.
        Если данные о человеке уже есть в адресной книги не дублирует информацию"""
+    global address_book_list
 
     if os.path.exists(way_book_directory):  # Проверяет есть ли уже такой каталог на компьютере
         None
@@ -65,7 +75,6 @@ def create_book(name: str):
         print('Создана новая адресная книга с именем: {0} \nВ каталоге --> {1}'.format(name, way_book_directory))
         address_book_list.append(name)
 
-    address_book_list.append(name)
 
 
 # Удаляет адресную книгу
@@ -130,19 +139,21 @@ def write_book(name_address_book: str, upgrade_information: list):
         file_not_found()
 
 
+# Добавляет человека в адресную книгу
 def add_human(name_address_book: str, human: Human):
+    global how_many_people
     if existence_book(name_address_book):
         information = open_book(name_address_book)
-        list_human = [human.name, ] # Остановился вот здесь нужно добавить чела в книгу!!!
-
+        list_human = [human.name, human.age, human.number]
+        information.append(list_human)
+        write_book(name_address_book, information)
+        how_many_people += 1
     else:
         file_not_found()
 
-m = open_book('test1')
-write_book('test1', m)
-print(m)
+h1 = Human('alex', '27', '+7924409989')
 
-
+add_human('test2', h1)
 
 
 
