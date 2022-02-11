@@ -1,2 +1,2 @@
 # AByteOfPythonHomework1
-Homewok №1 in book A byte of python
+Homewok №1 in book A byte of python test1
