@@ -57,7 +57,6 @@ def existence_book(name_address_book):
 def create_book(name: str):
     """Создает каталог с адресными книгами, если такового нет, и пустую адресную книгу.
        Если данные о человеке уже есть в адресной книги не дублирует информацию"""
-    global address_book_list
 
     if os.path.exists(way_book_directory):  # Проверяет есть ли уже такой каталог на компьютере
         None
@@ -75,16 +74,20 @@ def create_book(name: str):
         address_book.write('Адресная книга : ' + name + ' создана - ' + time.strftime('%d.%m.%Y') + '\n')
         address_book.close()
         print('Создана новая адресная книга с именем: {0} \nВ каталоге --> {1}'.format(name, way_book_directory))
-        address_book_list.append(name)
 
 
 # Удаляет адресную книгу
 def delete_book(name_address_book):
     """Удаляет адресную книгу"""
     if existence_book(name_address_book):
-        os.remove(way_book_directory + os.sep + name_address_book + '.txt')
-        print('Адресная книга с именем: {0} была удалена'.format(name_address_book))
-        address_book_list.remove(name_address_book)
+        say = input('Are you sure? "Y" - yes or "N" - no --->')
+        if say == 'Y':
+            os.remove(way_book_directory + os.sep + name_address_book + '.txt')
+            print('Адресная книга с именем: {0} была удалена'.format(name_address_book))
+        elif say == 'N':
+            print('Delete canceled')
+        else:
+            print("I don't understand what you input")
     else:
         file_not_found()
 
@@ -128,7 +131,7 @@ def open_book(name_address_book: str):
 
 
 # Записывает новую информацию в книгу, стирая старую(старую мы вытаскивали и преобразовывали)
-# Обязательная функция после работы с книгой
+# Обязательная функция после работы с книгой, если были изменения
 def write_book(name_address_book: str, upgrade_information: list):
     if existence_book(name_address_book):
         file = open(way_book_directory + os.sep + name_address_book + '.txt', 'w+')
@@ -146,8 +149,6 @@ def repeat_all(list_book_human: list, human: list):
     for person in list_book_human[1:]:
         if person[0] == human[0] and person[1] == human[1]:
             repeat += 1
-        else:
-            None
 
     return repeat
 
@@ -165,6 +166,7 @@ def repeat_name(list_book_human: list, human_name: str):
     return repeat_list
 
 
+# Вывести параметры человека по имени
 def find_human_by_name(name_address_book: str, human_name: str):
     list_book_human = open_book(name_address_book)
     repeat_list = repeat_name(list_book_human, human_name)
@@ -197,18 +199,83 @@ def add_human(name_address_book: str, human: Human):
 # Удаляет человека из адресной книги по имени
 # если таких имен несколько удаляет все это БАГА
 def delete_human_of_name(name_address_book: str, human_name):
-    list_book_human = open_book(name_address_book)
-    for person in list_book_human:
-        if person[0] == human_name:
-            list_book_human.remove(person)
-            print('{0} удален(а) из адресной книги {1}'.format(human_name, name_address_book))
-        else:
-            print('Human not found')
-    write_book(name_address_book, list_book_human)
+    if existence_book(name_address_book):
+        list_book_human = open_book(name_address_book)
+        delete = 0
+        for person in list_book_human:
+            if person[0] == human_name:
+                list_book_human.remove(person)
+                print('{0} удален(а) из адресной книги {1}'.format(human_name, name_address_book))
+                delete += 1
+        if delete == 0:
+            print('Human not found in address book')
+
+        write_book(name_address_book, list_book_human)
+    else:
+        file_not_found()
+
+
+# Выводит всю книгу на экран
+def print_book(name_address_book: str):
+    print_lists = open_book(name_address_book)
+    for information in print_lists:
+        print(*information)
+
+
+# Если пользователь отменил
+def canceled_script(word):
+    if word == 'cancel':
+        return False
+    else:
+        return True
+
+
+def warning_script():
+    print('!!!Are you sure to do this?!!!')
+    answer = input('writ to "y" - to do it or any key - dont do it ---> ')
+    if answer == 'y':
+        return True
+    else:
+        return False
 
 
 run = True
+
 while run:
-    command = input('Введите команду --->')
-    if command == 'выход':
+    command = input('Input command ---> ')
+    if command == 'exit':
         run = False
+    elif command == 'create book':
+        name = input('Input name of the book ---> ')
+        if canceled_script(name):
+            create_book(name)
+    elif command == 'delete book':
+        name = input('Input name of the book to delete ---> ')
+        if warning_script():
+            delete_book(name)
+    elif command == 'read book':
+        name = input('Input name of the book to read ---> ')
+        if canceled_script(name):
+            print_book(name)
+    elif command == 'cls':
+        os.system('cls')
+    elif command == 'add person':
+        name_book = input('Input name of the book to add person ---> ')
+        print('___Input info about the person___')
+        human_name = input("Person's name ---> ")
+        human_age = input("Person's age ---> ")
+        human_number = input("Person's number ---> ")
+        human = Human(human_name, human_age, human_number)
+        add_human(name_book, human)
+    elif command == 'find a person':
+        name_book = input('Input name of the book to find person ---> ')
+        name = input('Input name of the person to find ---> ')
+        find_human_by_name(name_book, name)
+    elif command == 'delete person':
+        name_book = input('Input name of the book to delete person ---> ')
+        name = input('Input name of the person to delete ---> ')
+        delete_human_of_name(name_book, name)
+    elif command == 'clean book':
+        name = input('Input name of the book to clean ---> ')
+        if warning_script():
+            cleanup_book(name)
