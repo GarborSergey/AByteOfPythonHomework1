@@ -242,7 +242,7 @@ def warning_script():
 run = True
 
 while run:
-    command = input('Input command ---> ')
+    command = input('\nInput command ---> ')
     if command == 'exit':
         run = False
     elif command == 'create book':
@@ -279,3 +279,11 @@ while run:
         name = input('Input name of the book to clean ---> ')
         if warning_script():
             cleanup_book(name)
+    elif command == 'help':
+        file = open('help.txt', 'r+')
+        lines = file.readlines()
+        file.close()
+        for line in lines:
+            print(line, end='')
+
+
