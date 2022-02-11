@@ -21,6 +21,7 @@ def zet(string: str):
 
 
 print(zet(x))
+print('hello world')
 
 
 
