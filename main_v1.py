@@ -5,7 +5,6 @@ import time
 address_book_list = []  # Список всех адресных книг на компьютере
 how_many_people = 0  # Количество людей во всех адресных книгах
 
-
 if platform.platform().startswith('Windows'):  # Проверяет какая ОС на компьютере
     # формирует путь директории
     way_book_directory = os.path.join(os.getenv('HOMEDRIVE'), os.getenv('HOMEPATH'), 'Address books')
@@ -32,13 +31,16 @@ class Human:
     def __del__(self):
         Human.numbers_of_human -= 1
 
+
 # для тестов
 h1 = Human('Alex', '27', '+7924409389')
 h2 = Human('Sergey', '17', '+7924401289')
 h3 = Human('Yulia', '32', '+791231989')
 h4 = Human('Misha', '10', '+792412389')
 h5 = Human('Sony', '24', '+792440131')
-h6 = Human('Lev', '54', '+7924409313')
+h6 = Human('Misha', '54', '+7924409313')
+
+
 # для тестов
 
 
@@ -74,7 +76,6 @@ def create_book(name: str):
         address_book.close()
         print('Создана новая адресная книга с именем: {0} \nВ каталоге --> {1}'.format(name, way_book_directory))
         address_book_list.append(name)
-
 
 
 # Удаляет адресную книгу
@@ -139,22 +140,75 @@ def write_book(name_address_book: str, upgrade_information: list):
         file_not_found()
 
 
+# проверяет совпадения всех данных человека с людьми мз книги
+def repeat_all(list_book_human: list, human: list):
+    repeat = 0
+    for person in list_book_human[1:]:
+        if person[0] == human[0] and person[1] == human[1]:
+            repeat += 1
+        else:
+            None
+
+    return repeat
+
+
+# Возвращает из данных книги людей с одинаковым именем
+def repeat_name(list_book_human: list, human_name: str):
+    repeat = 0
+    repeat_list = []
+    for person in list_book_human:
+        if person[0] == human_name:
+            repeat += 1
+            repeat_list.append(person)
+        else:
+            None
+    return repeat_list
+
+
+def find_human_by_name(name_address_book: str, human_name: str):
+    list_book_human = open_book(name_address_book)
+    repeat_list = repeat_name(list_book_human, human_name)
+    if len(repeat_list) > 0:
+        print('Найден(о) {0} человек(а) с именем {1}, в адресной книге {2} \nИМЯ____ВОЗРАСТ___НОМЕР:'.format(
+            len(repeat_list), human_name, name_address_book))
+        for repeat in repeat_list:
+            print(*repeat)
+    else:
+        print('Человек с именем "{0}" не найден в адресной книге {1}'.format(human_name, name_address_book))
+
+
 # Добавляет человека в адресную книгу
 def add_human(name_address_book: str, human: Human):
     global how_many_people
     if existence_book(name_address_book):
         information = open_book(name_address_book)
         list_human = [human.name, human.age, human.number]
-        information.append(list_human)
-        write_book(name_address_book, information)
-        how_many_people += 1
+        # Если человек с такими данными уже есть в книге, ничего не сделает
+        if repeat_all(information, list_human) == 0:
+            information.append(list_human)
+            write_book(name_address_book, information)
+            how_many_people += 1
+        else:
+            None
     else:
         file_not_found()
 
-h1 = Human('alex', '27', '+7924409989')
 
-add_human('test2', h1)
+# Удаляет человека из адресной книги по имени
+# если таких имен несколько удаляет все это БАГА
+def delete_human_of_name(name_address_book: str, human_name):
+    list_book_human = open_book(name_address_book)
+    for person in list_book_human:
+        if person[0] == human_name:
+            list_book_human.remove(person)
+            print('{0} удален(а) из адресной книги {1}'.format(human_name, name_address_book))
+        else:
+            print('Human not found')
+    write_book(name_address_book, list_book_human)
 
 
-
-
+run = True
+while run:
+    command = input('Введите команду --->')
+    if command == 'выход':
+        run = False
