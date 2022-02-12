@@ -1,0 +1,11 @@
+________________________________ADDRESS BOOK________________________________
+This program "Address book" this program can create address books, 
+store information about people in them: name, age and phone number.
+Information can be viewed, changed or deleted completely. 
+For example, you can create an address book with your friends, work colleagues,
+relatives, and so on. 
+This program creates text files that contain all your information.
+You can use "help" to wiew to view all program commands
+------------------------------------------------------------------------------
+report bugs "garborfersru@gmail.com"
+_______________________________________________________________________________
