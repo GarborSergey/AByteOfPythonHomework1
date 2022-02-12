@@ -4,6 +4,7 @@ import time
 
 address_book_list = []  # Список всех адресных книг на компьютере
 how_many_people = 0  # Количество людей во всех адресных книгах
+version = '0.0.3'
 
 if platform.platform().startswith('Windows'):  # Проверяет какая ОС на компьютере
     # формирует путь директории
@@ -155,11 +156,9 @@ def repeat_all(list_book_human: list, human: list):
 
 # Возвращает из данных книги людей с одинаковым именем
 def repeat_name(list_book_human: list, human_name: str):
-    repeat = 0
     repeat_list = []
     for person in list_book_human:
         if person[0] == human_name:
-            repeat += 1
             repeat_list.append(person)
         else:
             None
@@ -205,7 +204,6 @@ def delete_human_of_name(name_address_book: str, human_name):
         for person in list_book_human:
             if person[0] == human_name:
                 list_book_human.remove(person)
-                print('{0} удален(а) из адресной книги {1}'.format(human_name, name_address_book))
                 delete += 1
         if delete == 0:
             print('Human not found in address book')
@@ -230,9 +228,41 @@ def canceled_script(word):
         return True
 
 
+def change_information(name_address_book: str, human_name):
+    book_list = open_book(name_address_book)
+    repeat_list = repeat_name(book_list, human_name)
+    index = 0
+    for repeat in repeat_list:
+        index += 1
+        print(index, '.', *repeat)
+    if index >= 1:
+        print('Information about which of these people you want to change?')
+        index_change = int(input('input his number --->'))
+        index_change -= 1
+        print('Do you want to change age?')
+        change_age = input('writ to "y" - to do it or any other key - dont do it ---> ')
+        print('Do you want to change number?')
+        change_number = input('writ to "y" - to do it or any other key - dont do it ---> ')
+        if change_age == 'y':
+            new_age = input('Input new information about age --->')
+            repeat_list[index_change][1] = new_age
+        if change_number == 'y':
+            new_number = input('Input new number --->')
+            repeat_list[index_change][2] = new_number
+        delete_human_of_name(name_address_book, human_name)  # Тут использовал из-за баги
+        for info in repeat_list:
+            human = Human(info[0], info[1], info[2])
+            add_human(name_address_book, human)
+    if index == 0:
+        print('This name dont found in address book "{0}"'.format(name_address_book))
+
+
+
+
+# Предупреждение перед командой
 def warning_script():
-    print('!!!Are you sure to do this?!!!')
-    answer = input('writ to "y" - to do it or any key - dont do it ---> ')
+    print('Are you sure to do this? After you cant find this information')
+    answer = input('writ to "y" - to do it or any other key - dont do it ---> ')
     if answer == 'y':
         return True
     else:
@@ -240,6 +270,8 @@ def warning_script():
 
 
 run = True
+
+
 
 while run:
     command = input('\nInput command ---> ')
@@ -275,6 +307,7 @@ while run:
         name_book = input('Input name of the book to delete person ---> ')
         name = input('Input name of the person to delete ---> ')
         delete_human_of_name(name_book, name)
+        print('{0} удален(а) из адресной книги {1}'.format(name, name_book))
     elif command == 'clean book':
         name = input('Input name of the book to clean ---> ')
         if warning_script():
@@ -285,5 +318,18 @@ while run:
         file.close()
         for line in lines:
             print(line, end='')
-
-
+    elif command == 'change info':
+        name_book = input('Input name of the book to change person information  ---> ')
+        if existence_book(name_book):
+            name_human = input('Input the name of the person whose information you want to change ---> ')
+            change_information(name_book, name_human)
+    elif command == 'start':
+        file = open('start.txt', 'r+')
+        lines = file.readlines()
+        file.close()
+        for line in lines:
+            print(line, end='')
+    elif command == 'version':
+        print('version is - {0}'.format(version))
+    else:
+        print('"{0}" is not a program command enter "help" to to view all commands'.format(command))

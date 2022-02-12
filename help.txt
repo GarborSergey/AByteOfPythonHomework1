@@ -1,6 +1,14 @@
-help
-d
-ds
-sd
-sd
-sd
+____________________command list____________________
+"start" - some information about how to use this program
+"create book" - creates a new address book
+"delete book" - delete address book
+"read book" - print all iformation in address book
+"cls" - cleaning command list
+"add person" - add new person in address book
+"find a person" - print information about a person in address book
+"delete person" - delete person from address book
+"clean book" - delete all persons from address book
+"change info" - change information about of person in address book
+"exit" - to exit programm
+"version" - displays the current version of the program
+_____________________________________________________
