@@ -2,7 +2,7 @@ import os  # Модуль для взаимодействия с операци�
 import platform  # Модуль для получения информации о платформе
 import time
 
-version = '0.0.3'
+version = '0.0.4'
 
 if platform.platform().startswith('Windows'):  # Проверяет какая ОС на компьютере
     # формирует путь директории
@@ -19,16 +19,12 @@ def file_not_found():
 # класс ЧЕЛОВЕК name, age, number
 class Human:
     """Информация о человеке"""
-    numbers_of_human = 0
 
     def __init__(self, name: str, age: str, number: str):
         self.name = name
         self.age = age
         self.number = number
-        Human.numbers_of_human += 1
 
-    def __del__(self):
-        Human.numbers_of_human -= 1
 
 
 # Проверка существования Адресной книги name_address_book.txt
@@ -166,7 +162,6 @@ def find_human_by_name(name_address_book: str, human_name: str):
 
 # Добавляет человека в адресную книгу
 def add_human(name_address_book: str, human: Human):
-    global how_many_people
     if existence_book(name_address_book):
         information = open_book(name_address_book)
         list_human = [human.name, human.age, human.number]
@@ -174,7 +169,6 @@ def add_human(name_address_book: str, human: Human):
         if repeat_all(information, list_human) == 0:
             information.append(list_human)
             write_book(name_address_book, information)
-            how_many_people += 1
         else:
             None
     else:
@@ -243,8 +237,6 @@ def change_information(name_address_book: str, human_name):
         print('This name dont found in address book "{0}"'.format(name_address_book))
 
 
-
-
 # Предупреждение перед командой
 def warning_script():
     print('Are you sure to do this? After you cant find this information')
@@ -256,8 +248,6 @@ def warning_script():
 
 
 run = True
-
-
 
 while run:
     command = input('\nInput command ---> ')
